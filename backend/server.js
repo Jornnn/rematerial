@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3001;
 
 // --- 🔧 HARD-CODED CONFIG (for local/mockup use only) ---
 const OPENAI_API_KEY = "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";
-const DATABASE_URL = "postgresql://rematerial:rematerial_pass@db:5432/rematerial_db";
+const DATABASE_URL = "postgresql://data_pkrp_user:JhKMjNMpjWgpMtDohkk9D81BGYuNMJjy@dpg-d5eef3p5pdvs73fbe9t0-a/data_pkrp";
 // --------------------------------------------------------
 
 console.log("🧠 Using hardcoded OpenAI API key:", OPENAI_API_KEY ? "✔" : "✗");
