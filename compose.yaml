@@ -1,0 +1,60 @@
+services:
+  # Backend API
+  backend:
+    build: ./backend
+    container_name: rematerial-backend
+    environment:
+      - DATABASE_URL=postgresql://rematerial:rematerial_pass@db:5432/rematerial_db
+      # - OPENAI_API_KEY=${"your_api_key"}
+      - PORT=3001
+      - NODE_ENV=development
+    ports:
+      - "3001:3001"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run dev
+
+
+# PostgreSQL Database
+  db:
+    image: postgres:18
+    container_name: rematerial-db
+    environment:
+      POSTGRES_USER: rematerial
+      POSTGRES_PASSWORD: rematerial_pass
+      POSTGRES_DB: rematerial_db
+    ports:
+      - "5432:5432"
+    # ephemeral volume, only for container lifetime
+    volumes:
+      - /var/lib/postgresql
+      - ./backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rematerial"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  # Frontend React App
+  frontend:
+    build: ./frontend
+    container_name: rematerial-frontend
+    environment:
+      - VITE_API_URL=http://localhost:3001
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev
+
+    
+volumes:
+  postgres_data:
